@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - Profit24</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="faq-container">
+        <nav class="dashboard-nav">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                PROFIT24
+            </div>
+            <button onclick="location.href='dashboard.html'" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+        </nav>
+
+        <div class="faq-header">
+            <h1><i class="fas fa-question-circle"></i> Frequently Asked Questions</h1>
+            <p>Find answers to common questions about Profit24</p>
+        </div>
+
+        <div class="faq-categories" id="faqCategories"></div>
+
+        <div class="faq-list" id="faqList"></div>
+
+        <div class="contact-support">
+            <h3><i class="fas fa-headset"></i> Still have questions?</h3>
+            <p>Contact our support team for assistance</p>
+            <div class="support-buttons">
+                <a href="#" id="whatsappSupportLink" class="support-btn whatsapp" target="_blank">
+                    <i class="fab fa-whatsapp"></i> WhatsApp Support
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        loadFAQ();
+
+        async function loadFAQ() {
+            const response = await fetch(`${API_URL}/api/faq`);
+            const faqs = await response.json();
+            
+            const categories = Object.keys(faqs);
+            const categoriesContainer = document.getElementById('faqCategories');
+            const faqList = document.getElementById('faqList');
+            
+            categoriesContainer.innerHTML = `
+                <button class="category-btn active" data-category="all">All Questions</button>
+                ${categories.map(cat => `<button class="category-btn" data-category="${cat}">${cat}</button>`).join('')}
+            `;
+            
+            function displayFAQs(category) {
+                if (category === 'all') {
+                    let allFAQs = [];
+                    for (const cat in faqs) {
+                        allFAQs = [...allFAQs, ...faqs[cat]];
+                    }
+                    renderFAQs(allFAQs);
+                } else {
+                    renderFAQs(faqs[category] || []);
+                }
+            }
+            
+            function renderFAQs(faqsArray) {
+                faqList.innerHTML = faqsArray.map((faq, index) => `
+                    <div class="faq-item" style="animation-delay: ${index * 0.05}s">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            ${faq.question}
+                            <span><i class="fas fa-chevron-down"></i></span>
+                        </div>
+                        <div class="faq-answer">${faq.answer}</div>
+                    </div>
+                `).join('');
+            }
+            
+            displayFAQs('all');
+            
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    displayFAQs(btn.dataset.category);
+                });
+            });
+        }
+
+        function toggleFAQ(element) {
+            const answer = element.nextElementSibling;
+            const icon = element.querySelector('i');
+            answer.classList.toggle('show');
+            icon.classList.toggle('fa-chevron-down');
+            icon.classList.toggle('fa-chevron-up');
+        }
+
+        // Load WhatsApp link
+        async function loadWhatsAppLink() {
+            try {
+                const response = await fetch('/api/admin/settings');
+                const settings = await response.json();
+                const supportSetting = settings.find(s => s.key === 'whatsapp_support_number');
+                if (supportSetting) {
+                    document.getElementById('whatsappSupportLink').href = `https://wa.me/${supportSetting.value}`;
+                }
+            } catch(e) {}
+        }
+        loadWhatsAppLink();
+    </script>
+</body>
+</html>
