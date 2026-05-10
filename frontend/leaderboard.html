@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard - Profit24</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="leaderboard-container">
+        <nav class="dashboard-nav">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                PROFIT24
+            </div>
+            <button onclick="location.href='dashboard.html'" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+        </nav>
+
+        <div class="leaderboard-header">
+            <h1><i class="fas fa-trophy"></i> Leaderboard</h1>
+            <p>Top investors and earners on Profit24</p>
+        </div>
+
+        <div class="leaderboard-tabs">
+            <button class="tab-btn active" data-type="investors">
+                <i class="fas fa-chart-line"></i> Top Investors
+            </button>
+            <button class="tab-btn" data-type="earners">
+                <i class="fas fa-coins"></i> Top Earners
+            </button>
+            <button class="tab-btn" data-type="referrers">
+                <i class="fas fa-users"></i> Top Referrers
+            </button>
+            <button class="tab-btn" data-type="today">
+                <i class="fas fa-calendar-day"></i> Today's Top
+            </button>
+        </div>
+
+        <div class="leaderboard-list" id="leaderboardList">
+            <div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        loadLeaderboard('investors');
+
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                loadLeaderboard(btn.dataset.type);
+            });
+        });
+
+        async function loadLeaderboard(type) {
+            const response = await fetch(`${API_URL}/api/leaderboard/${type}`);
+            const leaders = await response.json();
+            const container = document.getElementById('leaderboardList');
+            
+            if (leaders.length === 0) {
+                container.innerHTML = '<div class="no-data">No data available</div>';
+                return;
+            }
+            
+            container.innerHTML = leaders.map((leader, index) => `
+                <div class="leaderboard-item" style="animation-delay: ${index * 0.05}s">
+                    <div class="leaderboard-rank rank-${index + 1}">
+                        ${index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}`}
+                    </div>
+                    <div class="leaderboard-name">
+                        <i class="fas fa-user-circle"></i>
+                        ${leader.username}
+                    </div>
+                    <div class="leaderboard-amount">
+                        ${leader.totalDeposit ? leader.totalDeposit.toLocaleString() : 
+                          leader.totalProfit ? leader.totalProfit.toLocaleString() : 
+                          leader.totalReferrals ? `${leader.totalReferrals} referrals` : 
+                          leader.amount ? leader.amount.toLocaleString() : '0'} PKR
+                    </div>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>
