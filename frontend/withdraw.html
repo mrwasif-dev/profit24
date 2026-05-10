@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Withdraw - Profit24</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="withdraw-container">
+        <nav class="dashboard-nav">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                PROFIT24
+            </div>
+            <button onclick="location.href='dashboard.html'" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+        </nav>
+
+        <div class="withdraw-card">
+            <h2><i class="fas fa-money-bill-wave"></i> Withdraw Funds</h2>
+            
+            <div class="balance-info" id="balanceInfo"></div>
+
+            <div class="account-select">
+                <h3><i class="fas fa-university"></i> Select Account Type</h3>
+                <div class="account-buttons">
+                    <button onclick="selectAccountType('jazzcash')" class="account-type-btn">
+                        <i class="fab fa-whatsapp"></i> JazzCash
+                    </button>
+                    <button onclick="selectAccountType('easypaisa')" class="account-type-btn">
+                        <i class="fas fa-mobile-alt"></i> Easypaisa
+                    </button>
+                </div>
+            </div>
+
+            <form id="withdrawForm" style="display: none;">
+                <div class="form-group">
+                    <label><i class="fas fa-hashtag"></i> Account Number</label>
+                    <input type="text" id="accountNumber" placeholder="e.g., 03123456789" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> Account Title</label>
+                    <input type="text" id="accountTitle" placeholder="Full name" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-coins"></i> Amount (PKR)</label>
+                    <input type="number" id="withdrawAmount" placeholder="Enter amount" required>
+                    <div class="withdraw-limits" id="withdrawLimits"></div>
+                </div>
+                <button type="submit" class="submit-btn">
+                    Request Withdrawal <i class="fas fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        checkAuth();
+        
+        let selectedAccountType = '';
+        let userBalance = 0;
+        let withdrawLimits = {};
+
+        async function loadBalance() {
+            const token = getToken();
+            const response = await fetch(`${API_URL}/api/auth/profile`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const user = await response.json();
+            userBalance = user.balance;
+            document.getElementById('balanceInfo').innerHTML = `
+                <div class="balance-display">
+                    <i class="fas fa-wallet"></i>
+                    <div>
+                        <strong>Available Balance:</strong>
+                        <span class="balance-amount">${userBalance.toLocaleString()} PKR</span>
+                    </div>
+                </div>
+            `;
+        }
+        loadBalance();
+
+        async function loadWithdrawLimits() {
+            const response = await fetch(`${API_URL}/api/admin/settings`);
+            const settings = await response.json();
+            withdrawLimits = {
+                min: settings.find(s => s.key === 'min_withdraw')?.value || 30,
+                max: settings.find(s => s.key === 'max_withdraw')?.value || 500000,
+                daily: settings.find(s => s.key === 'daily_withdraw_limit')?.value || 100000
+            };
+            
+            document.getElementById('withdrawLimits').innerHTML = `
+                <i class="fas fa-info-circle"></i>
+                Min: ${withdrawLimits.min} PKR | Max: ${withdrawLimits.max} PKR | Daily Limit: ${withdrawLimits.daily} PKR
+            `;
+        }
+        loadWithdrawLimits();
+
+        function selectAccountType(type) {
+            selectedAccountType = type;
+            document.getElementById('withdrawForm').style.display = 'block';
+            document.querySelectorAll('.account-type-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        document.getElementById('withdrawForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const amount = parseFloat(document.getElementById('withdrawAmount').value);
+            
+            if (amount < withdrawLimits.min) {
+                showToast(`Minimum withdrawal is ${withdrawLimits.min} PKR`, 'error');
+                return;
+            }
+            
+            if (amount > withdrawLimits.max) {
+                showToast(`Maximum withdrawal is ${withdrawLimits.max} PKR`, 'error');
+                return;
+            }
+            
+            if (amount > userBalance) {
+                showToast('Insufficient balance', 'error');
+                return;
+            }
+            
+            const token = getToken();
+            const response = await fetch(`${API_URL}/api/withdraw/create`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    amount,
+                    accountType: selectedAccountType,
+                    accountNumber: document.getElementById('accountNumber').value,
+                    accountTitle: document.getElementById('accountTitle').value
+                })
+            });
+            
+            const data = await response.json();
+            if (data.success) {
+                showToast('Withdrawal request submitted successfully!', 'success');
+                setTimeout(() => {
+                    window.location.href = '/dashboard';
+                }, 2000);
+            } else {
+                showToast(data.error, 'error');
+            }
+        });
+    </script>
+</body>
+</html>
