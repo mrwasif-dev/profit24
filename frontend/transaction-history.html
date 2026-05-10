@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction History - Profit24</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="dashboard-nav">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                PROFIT24
+            </div>
+            <button onclick="location.href='dashboard.html'" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+        </nav>
+
+        <div class="history-header">
+            <h1><i class="fas fa-list-ul"></i> Transaction History</h1>
+            <p>View all your deposits, withdrawals, profits and bonuses</p>
+        </div>
+
+        <div class="history-filters">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="deposit">Deposits</button>
+            <button class="filter-btn" data-filter="withdraw">Withdrawals</button>
+            <button class="filter-btn" data-filter="profit">Profits</button>
+            <button class="filter-btn" data-filter="referral_bonus">Referral Bonuses</button>
+        </div>
+
+        <div class="transaction-list" id="transactionList">
+            <div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        checkAuth();
+        loadTransactions('all');
+
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                loadTransactions(btn.dataset.filter);
+            });
+        });
+
+        async function loadTransactions(filter) {
+            const token = getToken();
+            let url = `${API_URL}/api/transactions`;
+            if (filter !== 'all') {
+                url += `/filter/${filter}`;
+            }
+            
+            const response = await fetch(url, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const transactions = await response.json();
+            const container = document.getElementById('transactionList');
+            
+            if (transactions.length === 0) {
+                container.innerHTML = '<div class="no-data">No transactions found</div>';
+                return;
+            }
+            
+            container.innerHTML = transactions.map((tx, index) => `
+                <div class="transaction-item" style="animation-delay: ${index * 0.03}s">
+                    <div class="transaction-icon ${tx.type}">
+                        <i class="fas ${tx.type === 'deposit' ? 'fa-arrow-down' : tx.type === 'withdraw' ? 'fa-arrow-up' : tx.type === 'profit' ? 'fa-chart-line' : 'fa-gift'}"></i>
+                    </div>
+                    <div class="transaction-info">
+                        <div class="transaction-type">${tx.type.replace('_', ' ').toUpperCase()}</div>
+                        <div class="transaction-date">${new Date(tx.createdAt).toLocaleString()}</div>
+                        ${tx.description ? `<div class="transaction-desc">${tx.description}</div>` : ''}
+                    </div>
+                    <div class="transaction-amount ${tx.type === 'deposit' || tx.type === 'profit' || tx.type === 'referral_bonus' ? 'positive' : 'negative'}">
+                        ${tx.type === 'deposit' || tx.type === 'profit' || tx.type === 'referral_bonus' ? '+' : '-'} ${tx.amount.toLocaleString()} PKR
+                    </div>
+                    <div class="transaction-status status-${tx.status}">${tx.status}</div>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>
