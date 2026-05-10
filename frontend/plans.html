@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investment Plans - Profit24</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="dashboard-nav">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                PROFIT24
+            </div>
+            <button onclick="location.href='dashboard.html'" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </button>
+        </nav>
+
+        <div class="plans-header">
+            <h1><i class="fas fa-gem"></i> Investment Plans</h1>
+            <p>Choose from 11 profitable plans and start earning 11% daily profit for 60 days</p>
+        </div>
+
+        <div class="plans-grid" id="plansGrid"></div>
+
+        <div class="investment-note">
+            <i class="fas fa-info-circle"></i>
+            <p>All plans offer 11% daily profit for 60 days. Minimum withdrawal is 30 PKR.</p>
+        </div>
+    </div>
+
+    <div class="floating-whatsapp">
+        <a href="#" id="floatingWhatsappLink" target="_blank">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        checkAuth();
+        loadPlans();
+
+        async function loadPlans() {
+            const response = await fetch(`${API_URL}/api/plans`);
+            const plans = await response.json();
+            const plansGrid = document.getElementById('plansGrid');
+            
+            plansGrid.innerHTML = plans.map((plan, index) => `
+                <div class="plan-card" style="animation-delay: ${index * 0.05}s">
+                    <div class="plan-badge">${plan.profitPercent}% Daily</div>
+                    <h3 class="plan-name">${plan.name}</h3>
+                    <div class="plan-amount">
+                        <span class="currency">PKR</span>
+                        ${plan.minAmount.toLocaleString()}
+                        ${plan.maxAmount > plan.minAmount ? ` - ${plan.maxAmount.toLocaleString()}` : ''}
+                    </div>
+                    <div class="plan-details">
+                        <div class="detail">
+                            <i class="fas fa-chart-line"></i>
+                            <span>${plan.profitPercent}% Daily Profit</span>
+                        </div>
+                        <div class="detail">
+                            <i class="fas fa-calendar"></i>
+                            <span>${plan.durationDays} Days Duration</span>
+                        </div>
+                        <div class="detail">
+                            <i class="fas fa-coins"></i>
+                            <span>Total Return: ${(plan.minAmount * (1 + plan.profitPercent * plan.durationDays / 100)).toLocaleString()} PKR</span>
+                        </div>
+                    </div>
+                    <button onclick="selectPlan(${plan.planId}, ${plan.minAmount})" class="invest-btn">
+                        Invest Now <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function selectPlan(planId, amount) {
+            localStorage.setItem('selectedPlan', planId);
+            localStorage.setItem('selectedAmount', amount);
+            window.location.href = '/deposit';
+        }
+    </script>
+</body>
+</html>
