@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Plan - Profit24</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="dashboard-nav">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                PROFIT24
+            </div>
+            <button onclick="location.href='dashboard.html'" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+        </nav>
+
+        <div class="plan-header">
+            <h1><i class="fas fa-chart-simple"></i> My Active Plan</h1>
+            <p>Track your current investment progress</p>
+        </div>
+
+        <div id="activePlanContent">
+            <div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
+        </div>
+
+        <div class="no-plan-card" id="noPlanCard" style="display: none;">
+            <i class="fas fa-rocket"></i>
+            <h3>No Active Investment Plan</h3>
+            <p>Start your investment journey today and earn 11% daily profit for 60 days!</p>
+            <button onclick="location.href='plans.html'" class="invest-now-btn">
+                Invest Now <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        checkAuth();
+        loadActivePlan();
+
+        async function loadActivePlan() {
+            const token = getToken();
+            const response = await fetch(`${API_URL}/api/deposit/active-plan`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const plan = await response.json();
+            
+            if (!plan.hasActivePlan) {
+                document.getElementById('activePlanContent').style.display = 'none';
+                document.getElementById('noPlanCard').style.display = 'block';
+                return;
+            }
+            
+            document.getElementById('activePlanContent').innerHTML = `
+                <div class="active-plan-card">
+                    <div class="plan-progress">
+                        <div class="progress-circle">
+                            <svg viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="45" fill="none" stroke="#e0e0e0" stroke-width="8"/>
+                                <circle cx="50" cy="50" r="45" fill="none" stroke="#667eea" stroke-width="8"
+                                        stroke-dasharray="${2 * Math.PI * 45}" 
+                                        stroke-dashoffset="${2 * Math.PI * 45 * (1 - plan.daysCompleted / 60)}"
+                                        transform="rotate(-90 50 50)"/>
+                            </svg>
+                            <div class="progress-text">
+                                <span class="percentage">${Math.round((plan.daysCompleted / 60) * 100)}%</span>
+                                <span class="days">Day ${plan.daysCompleted}/60</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="plan-details-card">
+                        <div class="detail-item">
+                            <i class="fas fa-gem"></i>
+                            <div>
+                                <label>Plan</label>
+                                <span>Plan ${plan.planId}</span>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-coins"></i>
+                            <div>
+                                <label>Investment Amount</label>
+                                <span>${plan.amount.toLocaleString()} PKR</span>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-chart-line"></i>
+                            <div>
+                                <label>Daily Profit</label>
+                                <span>${(plan.amount * 0.11).toLocaleString()} PKR (11%)</span>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-calendar"></i>
+                            <div>
+                                <label>Start Date</label>
+                                <span>${new Date(plan.startDate).toLocaleDateString()}</span>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-hourglass-half"></i>
+                            <div>
+                                <label>Days Remaining</label>
+                                <span>${plan.daysRemaining} days</span>
+                            </div>
+                        </div>
+                        <div class="detail-item highlight">
+                            <i class="fas fa-chart-simple"></i>
+                            <div>
+                                <label>Total Expected Profit</label>
+                                <span>${(plan.amount * 0.11 * 60).toLocaleString()} PKR</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="profit-timeline">
+                        <h3><i class="fas fa-calendar-week"></i> Profit Timeline</h3>
+                        <div class="timeline-progress">
+                            <div class="timeline-bar" style="width: ${(plan.daysCompleted / 60) * 100}%"></div>
+                        </div>
+                        <div class="timeline-labels">
+                            <span>Started</span>
+                            <span>${plan.daysCompleted} Days Completed</span>
+                            <span>60 Days Complete</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
