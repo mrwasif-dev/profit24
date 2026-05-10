@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Withdraw Logs - Profit24</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="dashboard-nav">
+            <div class="logo"><i class="fas fa-chart-line"></i> PROFIT24</div>
+            <button onclick="location.href='dashboard.html'" class="back-btn"><i class="fas fa-arrow-left"></i> Back</button>
+        </nav>
+        <div class="history-header">
+            <h1><i class="fas fa-history"></i> Withdraw Logs</h1>
+            <p>View all your withdrawal history</p>
+        </div>
+        <div class="transaction-list" id="withdrawLogs">
+            <div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
+        </div>
+    </div>
+    <script src="js/main.js"></script>
+    <script>
+        checkAuth();
+        (async () => {
+            const token = getToken();
+            const response = await fetch(`${API_URL}/api/withdraw/my-withdrawals`, { 
+                headers: { 'Authorization': `Bearer ${token}` } 
+            });
+            const withdrawals = await response.json();
+            const container = document.getElementById('withdrawLogs');
+            if (withdrawals.length === 0) {
+                container.innerHTML = '<div class="no-data"><i class="fas fa-inbox"></i> No withdrawal history found</div>';
+            } else {
+                container.innerHTML = withdrawals.map((w, i) => `
+                    <div class="transaction-item" style="animation-delay: ${i * 0.05}s">
+                        <div class="transaction-icon withdraw"><i class="fas fa-arrow-up"></i></div>
+                        <div class="transaction-info">
+                            <div class="transaction-type">WITHDRAWAL</div>
+                            <div class="transaction-date">${new Date(w.createdAt).toLocaleString()}</div>
+                            <div class="transaction-desc">${w.accountType.toUpperCase()} | ${w.accountNumber}</div>
+                        </div>
+                        <div class="transaction-amount negative">- ${w.amount.toLocaleString()} PKR</div>
+                        <div class="transaction-status status-${w.status}">${w.status}</div>
+                    </div>
+                `).join('');
+            }
+        })();
+    </script>
+</body>
+</html>
