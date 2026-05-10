@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Team - Profit24</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="dashboard-nav">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                PROFIT24
+            </div>
+            <button onclick="location.href='dashboard.html'" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+        </nav>
+
+        <div class="team-header">
+            <h1><i class="fas fa-users"></i> My Team</h1>
+            <p>Track your referrals and earn 11% bonus on their deposits</p>
+        </div>
+
+        <div class="team-stats">
+            <div class="team-stat-card">
+                <i class="fas fa-user-plus"></i>
+                <div class="team-stat-number" id="totalReferrals">0</div>
+                <div class="team-stat-label">Total Referrals</div>
+            </div>
+            <div class="team-stat-card">
+                <i class="fas fa-chart-line"></i>
+                <div class="team-stat-number" id="totalTeamInvestment">0 PKR</div>
+                <div class="team-stat-label">Team Investment</div>
+            </div>
+            <div class="team-stat-card">
+                <i class="fas fa-gift"></i>
+                <div class="team-stat-number" id="myReferralBonus">0 PKR</div>
+                <div class="team-stat-label">My Referral Bonus</div>
+            </div>
+        </div>
+
+        <div class="referral-link-section">
+            <h3><i class="fas fa-link"></i> Your Referral Link</h3>
+            <div class="referral-link-box">
+                <input type="text" id="referralLink" readonly>
+                <button onclick="copyReferralLink()" class="copy-btn">
+                    <i class="fas fa-copy"></i> Copy
+                </button>
+            </div>
+        </div>
+
+        <div class="team-list-section">
+            <h3><i class="fas fa-list"></i> Team Members</h3>
+            <div class="team-list" id="teamList">
+                <div class="loading">Loading team members...</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        checkAuth();
+        loadMyTeam();
+        loadReferralLink();
+
+        async function loadMyTeam() {
+            const token = getToken();
+            const response = await fetch(`${API_URL}/api/team/my-team`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const data = await response.json();
+            
+            document.getElementById('totalReferrals').innerText = data.totalReferrals;
+            document.getElementById('totalTeamInvestment').innerHTML = `${data.totalTeamInvestment.toLocaleString()} PKR`;
+            document.getElementById('myReferralBonus').innerHTML = `${data.myReferralBonus.toLocaleString()} PKR`;
+            
+            const teamList = document.getElementById('teamList');
+            
+            if (data.teamMembers.length === 0) {
+                teamList.innerHTML = '<div class="no-data">No team members yet. Share your referral link!</div>';
+                return;
+            }
+            
+            teamList.innerHTML = data.teamMembers.map((member, index) => `
+                <div class="team-member" style="animation-delay: ${index * 0.05}s">
+                    <div class="member-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="member-info">
+                        <div class="member-name">${member.username}</div>
+                        <div class="member-date">Joined: ${new Date(member.joinedDate).toLocaleDateString()}</div>
+                    </div>
+                    <div class="member-stats">
+                        <div><i class="fas fa-coins"></i> Investment: ${member.totalInvestment.toLocaleString()} PKR</div>
+                        <div><i class="fas fa-chart-line"></i> Profit: ${member.totalProfit.toLocaleString()} PKR</div>
+                    </div>
+                    <div class="member-status ${member.status}">
+                        ${member.status === 'active' ? '<i class="fas fa-circle"></i> Active' : '<i class="fas fa-clock"></i> Pending'}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function loadReferralLink() {
+            const token = getToken();
+            const response = await fetch(`${API_URL}/api/team/referral-link`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const data = await response.json();
+            document.getElementById('referralLink').value = data.link;
+        }
+
+        function copyReferralLink() {
+            const link = document.getElementById('referralLink');
+            link.select();
+            document.execCommand('copy');
+            showToast('Referral link copied!', 'success');
+        }
+    </script>
+</body>
+</html>
