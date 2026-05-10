@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profit24 - Earn 11% Daily Profit | Best Investment Platform</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Animated Particles -->
+    <div class="particles" id="particles"></div>
+    
+    <div class="landing-container">
+        <nav class="landing-nav">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                PROFIT24
+            </div>
+            <div class="nav-buttons">
+                <button onclick="showSignIn()" class="nav-btn">Sign In</button>
+                <button onclick="showSignUp()" class="nav-btn primary">Get Started <i class="fas fa-arrow-right"></i></button>
+            </div>
+        </nav>
+
+        <div class="hero-section">
+            <div class="hero-badge">
+                <i class="fas fa-fire"></i> Trusted by 10,000+ Investors
+            </div>
+            <h1>Earn <span class="highlight">11% Daily</span> <br>Profit for 60 Days</h1>
+            <p>Start your investment journey with Profit24 and watch your money grow daily</p>
+            <div class="hero-buttons">
+                <button onclick="showSignUp()" class="hero-btn primary">Start Investing <i class="fas fa-rocket"></i></button>
+                <button onclick="location.href='leaderboard.html'" class="hero-btn secondary">View Leaderboard <i class="fas fa-trophy"></i></button>
+            </div>
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-number">360</span>
+                    <span class="stat-label">Min Investment (PKR)</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">30</span>
+                    <span class="stat-label">Min Withdraw (PKR)</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">11%</span>
+                    <span class="stat-label">Daily Profit</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">60</span>
+                    <span class="stat-label">Days Duration</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="plans-preview">
+            <h2>🔥 Popular Investment Plans</h2>
+            <div class="preview-grid" id="previewPlans"></div>
+            <button onclick="location.href='plans.html'" class="view-all-btn">View All 11 Plans <i class="fas fa-arrow-right"></i></button>
+        </div>
+
+        <div class="features-section">
+            <h2>Why Choose <span class="gradient-text">Profit24?</span></h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-chart-simple"></i></div>
+                    <h3>11% Daily Profit</h3>
+                    <p>Earn consistent returns every single day for 60 days on your investment</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+                    <h3>Instant Withdrawal</h3>
+                    <p>Withdraw your profits starting from just 30 PKR with zero fees</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-users"></i></div>
+                    <h3>Referral Bonus</h3>
+                    <p>Earn 11% bonus on every deposit made by your referrals</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+                    <h3>100% Secure</h3>
+                    <p>FBR registered platform with bank-grade security protocols</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-clock"></i></div>
+                    <h3>24/7 Support</h3>
+                    <p>Dedicated customer support available round the clock</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-mobile-alt"></i></div>
+                    <h3>Mobile Friendly</h3>
+                    <p>Fully responsive platform works on all devices</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="how-it-works">
+            <h2>How It Works</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <i class="fas fa-user-plus step-icon"></i>
+                    <h3>Create Account</h3>
+                    <p>Sign up for free in just 30 seconds</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <i class="fas fa-coins step-icon"></i>
+                    <h3>Choose Plan</h3>
+                    <p>Select from 11 investment plans</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <i class="fas fa-money-bill-wave step-icon"></i>
+                    <h3>Deposit Funds</h3>
+                    <p>Send payment via Easypaisa/JazzCash</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <i class="fas fa-chart-line step-icon"></i>
+                    <h3>Earn Daily</h3>
+                    <p>Get 11% profit every day for 60 days</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="testimonials">
+            <h2>What Our <span class="gradient-text">Investors Say</span></h2>
+            <div class="testimonial-grid">
+                <div class="testimonial-card">
+                    <i class="fas fa-quote-left"></i>
+                    <p>"Best investment platform! Regular daily profits and instant withdrawals."</p>
+                    <div class="testimonial-user">
+                        <strong>Ali Raza</strong>
+                        <span>Invested 50,000 PKR</span>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <i class="fas fa-quote-left"></i>
+                    <p>"Received my first profit within 24 hours. Highly recommended!"</p>
+                    <div class="testimonial-user">
+                        <strong>Sana Khan</strong>
+                        <span>Invested 25,000 PKR</span>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <i class="fas fa-quote-left"></i>
+                    <p>"Referral bonus system is amazing. Earning extra 11% from my team."</p>
+                    <div class="testimonial-user">
+                        <strong>Usman Ali</strong>
+                        <span>Invested 100,000 PKR</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i class="fas fa-chart-line"></i>
+                    PROFIT24
+                    <p>Earn 11% Daily Profit</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="plans.html">Investment Plans</a>
+                    <a href="leaderboard.html">Leaderboard</a>
+                    <a href="faq.html">FAQ</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Legal</h4>
+                    <a href="#">Terms & Conditions</a>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Refund Policy</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Connect</h4>
+                    <a href="#" id="whatsappChannelLink" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp Channel</a>
+                    <a href="#" id="whatsappSupportLink" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp Support</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Profit24. All Rights Reserved. | FBR Registered Platform</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Sign In Modal -->
+    <div id="signinModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('signinModal')">&times;</span>
+            <div class="modal-header">
+                <i class="fas fa-sign-in-alt"></i>
+                <h2>Welcome Back</h2>
+                <p>Sign in to your account</p>
+            </div>
+            <form id="signinForm">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="loginUsername" placeholder="Username" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="loginPassword" placeholder="Password" required>
+                </div>
+                <button type="submit" class="modal-btn">Sign In <i class="fas fa-arrow-right"></i></button>
+            </form>
+            <p class="modal-footer">Don't have an account? <a href="#" onclick="showSignUp(); return false;">Create Account</a></p>
+        </div>
+    </div>
+
+    <!-- Sign Up Modal -->
+    <div id="signupModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('signupModal')">&times;</span>
+            <div class="modal-header">
+                <i class="fas fa-user-plus"></i>
+                <h2>Create Account</h2>
+                <p>Start your investment journey today</p>
+            </div>
+            <form id="signupForm">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="signupUsername" placeholder="Username" required>
+                </div>
+                <div class="input-group">
+                    <i class="fab fa-whatsapp"></i>
+                    <input type="tel" id="signupWhatsapp" placeholder="WhatsApp Number (e.g., 03123456789)" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="signupPassword" placeholder="Password" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-gift"></i>
+                    <input type="text" id="referralCode" placeholder="Referral Code (Optional)">
+                </div>
+                <button type="submit" class="modal-btn">Create Account <i class="fas fa-rocket"></i></button>
+            </form>
+            <p class="modal-footer">Already have an account? <a href="#" onclick="showSignIn(); return false;">Sign In</a></p>
+        </div>
+    </div>
+
+    <div class="floating-whatsapp">
+        <a href="#" id="floatingWhatsappLink" target="_blank">
+            <i class="fab fa-whatsapp"></i>
+            <span class="tooltip">Need Help? Chat with us!</span>
+        </a>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        // Create animated particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.width = Math.random() * 5 + 2 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particle.style.animationDuration = 10 + Math.random() * 10 + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+        createParticles();
+
+        // Get URL parameters for referral
+        const urlParams = new URLSearchParams(window.location.search);
+        const refCode = urlParams.get('ref');
+        if (refCode) {
+            localStorage.setItem('referralCode', refCode);
+            setTimeout(() => {
+                document.getElementById('referralCode').value = refCode;
+                showSignUp();
+            }, 500);
+        }
+
+        // Load preview plans
+        async function loadPreviewPlans() {
+            const response = await fetch('/api/plans');
+            const plans = await response.json();
+            const previewPlans = plans.slice(0, 4);
+            const container = document.getElementById('previewPlans');
+            container.innerHTML = previewPlans.map((plan, index) => `
+                <div class="preview-plan" style="animation-delay: ${index * 0.1}s">
+                    <i class="fas fa-gem"></i>
+                    <h3>${plan.name}</h3>
+                    <div class="amount">${plan.minAmount.toLocaleString()} PKR</div>
+                    <div class="profit"><i class="fas fa-chart-line"></i> ${plan.profitPercent}% Daily</div>
+                    <div class="duration"><i class="fas fa-calendar"></i> ${plan.durationDays} Days</div>
+                </div>
+            `).join('');
+        }
+        loadPreviewPlans();
+
+        // Load WhatsApp links
+        async function loadWhatsAppLinks() {
+            try {
+                const response = await fetch('/api/admin/settings');
+                const settings = await response.json();
+                const channelSetting = settings.find(s => s.key === 'whatsapp_channel_link');
+                const supportSetting = settings.find(s => s.key === 'whatsapp_support_number');
+                
+                if (channelSetting) {
+                    document.getElementById('whatsappChannelLink').href = channelSetting.value;
+                }
+                if (supportSetting) {
+                    const waLink = `https://wa.me/${supportSetting.value}`;
+                    document.getElementById('whatsappSupportLink').href = waLink;
+                    document.getElementById('floatingWhatsappLink').href = waLink;
+                }
+            } catch(e) {
+                console.log('Using default WhatsApp links');
+            }
+        }
+        loadWhatsAppLinks();
+    </script>
+</body>
+</html>
