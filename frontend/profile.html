@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Profit24</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="dashboard-nav">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                PROFIT24
+            </div>
+            <button onclick="location.href='dashboard.html'" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+        </nav>
+
+        <div class="profile-container">
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <h1 id="profileUsername">Loading...</h1>
+                <p>Member since <span id="memberSince">-</span></p>
+            </div>
+
+            <div class="profile-stats">
+                <div class="stat-card">
+                    <i class="fas fa-wallet"></i>
+                    <div>
+                        <span>Balance</span>
+                        <strong id="profileBalance">0 PKR</strong>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-chart-line"></i>
+                    <div>
+                        <span>Total Deposit</span>
+                        <strong id="profileTotalDeposit">0 PKR</strong>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-coins"></i>
+                    <div>
+                        <span>Total Profit</span>
+                        <strong id="profileTotalProfit">0 PKR</strong>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-gift"></i>
+                    <div>
+                        <span>Referral Bonus</span>
+                        <strong id="profileReferralBonus">0 PKR</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-form">
+                <h3><i class="fas fa-edit"></i> Edit Profile</h3>
+                <div class="form-group">
+                    <label><i class="fab fa-whatsapp"></i> WhatsApp Number</label>
+                    <input type="tel" id="editWhatsapp" placeholder="WhatsApp Number">
+                </div>
+                <button onclick="updateProfile()" class="save-btn">Save Changes</button>
+            </div>
+
+            <div class="password-form">
+                <h3><i class="fas fa-key"></i> Change Password</h3>
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> Current Password</label>
+                    <input type="password" id="oldPassword" placeholder="Enter current password">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> New Password</label>
+                    <input type="password" id="newPassword" placeholder="Enter new password">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> Confirm New Password</label>
+                    <input type="password" id="confirmPassword" placeholder="Confirm new password">
+                </div>
+                <button onclick="changePassword()" class="save-btn">Change Password</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        checkAuth();
+        loadProfile();
+
+        async function loadProfile() {
+            const token = getToken();
+            const response = await fetch(`${API_URL}/api/auth/profile`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const user = await response.json();
+            
+            document.getElementById('profileUsername').innerText = user.username;
+            document.getElementById('memberSince').innerText = new Date(user.createdAt).toLocaleDateString();
+            document.getElementById('profileBalance').innerHTML = `${user.balance.toLocaleString()} PKR`;
+            document.getElementById('profileTotalDeposit').innerHTML = `${user.totalDeposit.toLocaleString()} PKR`;
+            document.getElementById('profileTotalProfit').innerHTML = `${user.totalProfit.toLocaleString()} PKR`;
+            document.getElementById('profileReferralBonus').innerHTML = `${user.totalReferralBonus.toLocaleString()} PKR`;
+            document.getElementById('editWhatsapp').value = user.whatsapp;
+        }
+
+        async function updateProfile() {
+            const token = getToken();
+            const whatsapp = document.getElementById('editWhatsapp').value;
+            
+            const response = await fetch(`${API_URL}/api/auth/profile`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ whatsapp })
+            });
+            
+            const data = await response.json();
+            if (data.success) {
+                showToast('Profile updated successfully!', 'success');
+            } else {
+                showToast(data.error, 'error');
+            }
+        }
+
+        async function changePassword() {
+            const oldPassword = document.getElementById('oldPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (newPassword !== confirmPassword) {
+                showToast('New passwords do not match', 'error');
+                return;
+            }
+            
+            const token = getToken();
+            const response = await fetch(`${API_URL}/api/auth/change-password`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type':application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ oldPassword, newPassword })
+            });
+            
+            const data = await response.json();
+            if (data.success) {
+                showToast('Password changed successfully!', 'success');
+                document.getElementById('oldPassword').value = '';
+                document.getElementById('newPassword').value = '';
+                document.getElementById('confirmPassword').value = '';
+            } else {
+                showToast(data.error, 'error');
+            }
+        }
+    </script>
+</body>
+</html>
