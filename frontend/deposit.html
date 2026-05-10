@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deposit - Profit24</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="deposit-container">
+        <nav class="dashboard-nav">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                PROFIT24
+            </div>
+            <button onclick="location.href='dashboard.html'" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+        </nav>
+
+        <div class="deposit-card">
+            <h2><i class="fas fa-coins"></i> Make a Deposit</h2>
+            
+            <div class="selected-plan-info" id="selectedPlanInfo"></div>
+
+            <div class="account-buttons">
+                <button onclick="showAccount('easypaisa')" class="account-btn">
+                    <i class="fas fa-mobile-alt"></i>
+                    Easypaisa
+                </button>
+                <button onclick="showAccount('jazzcash')" class="account-btn">
+                    <i class="fas fa-mobile-alt"></i>
+                    JazzCash
+                </button>
+            </div>
+
+            <div id="accountDetails" class="account-details" style="display: none;"></div>
+
+            <form id="depositForm" style="display: none;">
+                <div class="form-group">
+                    <label><i class="fas fa-image"></i> Upload Screenshot</label>
+                    <input type="file" id="screenshot" accept="image/*" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-hashtag"></i> Transaction ID</label>
+                    <input type="text" id="transactionId" placeholder="Enter transaction ID" required>
+                </div>
+                <button type="submit" class="submit-btn">
+                    Submit Deposit <i class="fas fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        checkAuth();
+        
+        const selectedPlan = localStorage.getItem('selectedPlan');
+        const selectedAmount = localStorage.getItem('selectedAmount');
+        
+        if (!selectedPlan) {
+            window.location.href = '/plans';
+        }
+        
+        document.getElementById('selectedPlanInfo').innerHTML = `
+            <div class="plan-info">
+                <i class="fas fa-gem"></i>
+                <div>
+                    <strong>Selected Plan:</strong> Plan ${selectedPlan}<br>
+                    <strong>Amount:</strong> ${parseInt(selectedAmount).toLocaleString()} PKR
+                </div>
+            </div>
+        `;
+
+        let accounts = [];
+
+        async function loadAccounts() {
+            const response = await fetch(`${API_URL}/api/deposit/accounts`);
+            accounts = await response.json();
+        }
+        loadAccounts();
+
+        function showAccount(type) {
+            const account = accounts.find(a => a.type === type);
+            if (account) {
+                document.getElementById('accountDetails').innerHTML = `
+                    <div class="account-header">
+                        <i class="fas fa-university"></i>
+                        <h3>Send Money to This Account</h3>
+                    </div>
+                    <div class="account-number">
+                        ${account.number}
+                        <button onclick="copyText('${account.number}')" class="copy-btn">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <div class="account-title">
+                        <i class="fas fa-user"></i> Account Title: ${account.title}
+                    </div>
+                    <div class="amount-to-send">
+                        <i class="fas fa-money-bill-wave"></i> Amount to Send: ${parseInt(selectedAmount).toLocaleString()} PKR
+                    </div>
+                `;
+                document.getElementById('accountDetails').style.display = 'block';
+                document.getElementById('depositForm').style.display = 'block';
+            }
+        }
+
+        function copyText(text) {
+            navigator.clipboard.writeText(text);
+            showToast('Account number copied!', 'success');
+        }
+
+        document.getElementById('depositForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData();
+            formData.append('planId', selectedPlan);
+            formData.append('amount', selectedAmount);
+            formData.append('transactionId', document.getElementById('transactionId').value);
+            formData.append('screenshot', document.getElementById('screenshot').files[0]);
+            
+            const token = getToken();
+            const response = await fetch(`${API_URL}/api/deposit/create`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` },
+                body: formData
+            });
+            
+            const data = await response.json();
+            if (data.success) {
+                showToast('Deposit request submitted successfully!', 'success');
+                setTimeout(() => {
+                    window.location.href = '/dashboard';
+                }, 2000);
+            } else {
+                showToast(data.error, 'error');
+            }
+        });
+    </script>
+</body>
+</html>
