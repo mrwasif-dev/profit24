@@ -3,67 +3,198 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profit24 - Earn 11% Daily</title>
+    <title>Profit24 - Earn 11% Daily Profit</title>
     <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <div class="landing-page">
-            <div class="logo">
-                <h1>💰 PROFIT24</h1>
-                <p>Earn 11% Daily Profit for 60 Days</p>
+    <div class="landing-container">
+        <nav class="landing-nav">
+            <div class="logo">💰 PROFIT24</div>
+            <div class="nav-buttons">
+                <button onclick="showSignIn()" class="nav-btn">Sign In</button>
+                <button onclick="showSignUp()" class="nav-btn primary">Sign Up</button>
             </div>
-            
-            <div class="auth-buttons">
-                <button onclick="showSignIn()" class="btn-primary">Sign In</button>
-                <button onclick="showSignUp()" class="btn-secondary">Sign Up</button>
-            </div>
-            
-            <div class="features">
-                <div class="feature">
-                    <span>✅</span>
-                    <span>60 Days Returns</span>
+        </nav>
+
+        <div class="hero-section">
+            <h1>Earn <span class="highlight">11% Daily</span> Profit</h1>
+            <p>For 60 Days on Your Investment</p>
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-number">360</span>
+                    <span class="stat-label">Min Investment (PKR)</span>
                 </div>
-                <div class="feature">
-                    <span>📈</span>
-                    <span>11% Daily Profit</span>
+                <div class="stat">
+                    <span class="stat-number">30</span>
+                    <span class="stat-label">Min Withdraw (PKR)</span>
                 </div>
-                <div class="feature">
-                    <span>💸</span>
-                    <span>Withdraw from 30 PKR</span>
-                </div>
-                <div class="feature">
-                    <span>🔗</span>
-                    <span>Referral Bonus 11%</span>
+                <div class="stat">
+                    <span class="stat-number">11%</span>
+                    <span class="stat-label">Daily Profit</span>
                 </div>
             </div>
         </div>
-        
-        <!-- Sign In Modal -->
-        <div id="signinModal" class="modal">
-            <div class="modal-content">
-                <span class="close" onclick="closeModal('signinModal')">&times;</span>
-                <h2>Sign In</h2>
+
+        <div class="plans-preview">
+            <h2>Investment Plans</h2>
+            <div class="preview-grid" id="previewPlans"></div>
+            <button onclick="location.href='plans.html'" class="view-all-btn">View All Plans →</button>
+        </div>
+
+        <div class="features-section">
+            <h2>Why Choose Profit24?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3>11% Daily Profit</h3>
+                    <p>Earn consistent returns every single day for 60 days</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Instant Withdrawal</h3>
+                    <p>Withdraw your profits starting from just 30 PKR</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔗</div>
+                    <h3>Referral Bonus</h3>
+                    <p>Earn 11% bonus on every deposit from your referrals</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>Secure Platform</h3>
+                    <p>FBR registered and fully secure investment platform</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="how-it-works">
+            <h2>How It Works</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Sign Up</h3>
+                    <p>Create your free account</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Choose Plan</h3>
+                    <p>Select your investment plan</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Deposit</h3>
+                    <p>Send payment via Easypaisa/JazzCash</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Earn Daily</h3>
+                    <p>Get 11% profit every day for 60 days</p>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="leaderboard.html">Leaderboard</a>
+                    <a href="faq.html">FAQ</a>
+                    <a href="#" onclick="showContact()">Contact</a>
+                </div>
+                <div class="footer-social">
+                    <a href="#" id="whatsappChannelLink" class="social-btn whatsapp-channel" target="_blank">📢 WhatsApp Channel</a>
+                    <a href="#" id="whatsappSupportLink" class="social-btn whatsapp-support" target="_blank">💬 WhatsApp Support</a>
+                </div>
+                <p>© 2024 Profit24. All rights reserved. | FBR Registered</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Sign In Modal -->
+    <div id="signinModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('signinModal')">&times;</span>
+            <h2>Sign In</h2>
+            <form id="signinForm">
                 <input type="text" id="loginUsername" placeholder="Username" required>
                 <input type="password" id="loginPassword" placeholder="Password" required>
-                <button onclick="signIn()" class="btn-primary">Sign In</button>
-            </div>
-        </div>
-        
-        <!-- Sign Up Modal -->
-        <div id="signupModal" class="modal">
-            <div class="modal-content">
-                <span class="close" onclick="closeModal('signupModal')">&times;</span>
-                <h2>Sign Up</h2>
-                <input type="text" id="signupUsername" placeholder="Username" required>
-                <input type="tel" id="signupWhatsapp" placeholder="WhatsApp Number" required>
-                <input type="password" id="signupPassword" placeholder="Password" required>
-                <input type="text" id="referralCode" placeholder="Referral Code (Optional)">
-                <button onclick="signUp()" class="btn-primary">Sign Up</button>
-            </div>
+                <button type="submit" class="modal-btn">Sign In</button>
+            </form>
+            <p class="modal-footer">Don't have an account? <a href="#" onclick="showSignUp(); return false;">Sign Up</a></p>
         </div>
     </div>
-    
+
+    <!-- Sign Up Modal -->
+    <div id="signupModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('signupModal')">&times;</span>
+            <h2>Sign Up</h2>
+            <form id="signupForm">
+                <input type="text" id="signupUsername" placeholder="Username" required>
+                <input type="tel" id="signupWhatsapp" placeholder="WhatsApp Number (e.g., 03123456789)" required>
+                <input type="password" id="signupPassword" placeholder="Password" required>
+                <input type="text" id="referralCode" placeholder="Referral Code (Optional)">
+                <button type="submit" class="modal-btn">Sign Up</button>
+            </form>
+            <p class="modal-footer">Already have an account? <a href="#" onclick="showSignIn(); return false;">Sign In</a></p>
+        </div>
+    </div>
+
+    <div class="floating-whatsapp">
+        <a href="#" id="floatingWhatsappLink" target="_blank">💬</a>
+    </div>
+
     <script src="js/main.js"></script>
+    <script>
+        // Get URL parameters for referral
+        const urlParams = new URLSearchParams(window.location.search);
+        const refCode = urlParams.get('ref');
+        if (refCode) {
+            localStorage.setItem('referralCode', refCode);
+            setTimeout(() => {
+                document.getElementById('referralCode').value = refCode;
+                showSignUp();
+            }, 500);
+        }
+
+        // Load preview plans
+        async function loadPreviewPlans() {
+            const response = await fetch('/api/plans');
+            const plans = await response.json();
+            const previewPlans = plans.slice(0, 4);
+            const container = document.getElementById('previewPlans');
+            container.innerHTML = previewPlans.map(plan => `
+                <div class="preview-plan">
+                    <h3>${plan.name}</h3>
+                    <div class="amount">${plan.minAmount.toLocaleString()} PKR</div>
+                    <div class="profit">${plan.profitPercent}% Daily</div>
+                    <div class="duration">${plan.durationDays} Days</div>
+                </div>
+            `).join('');
+        }
+        loadPreviewPlans();
+
+        // Load WhatsApp links
+        async function loadWhatsAppLinks() {
+            try {
+                const response = await fetch('/api/admin/settings');
+                const settings = await response.json();
+                const channelSetting = settings.find(s => s.key === 'whatsapp_channel_link');
+                const supportSetting = settings.find(s => s.key === 'whatsapp_support_number');
+                
+                if (channelSetting) {
+                    document.getElementById('whatsappChannelLink').href = channelSetting.value;
+                }
+                if (supportSetting) {
+                    const waLink = `https://wa.me/${supportSetting.value}`;
+                    document.getElementById('whatsappSupportLink').href = waLink;
+                    document.getElementById('floatingWhatsappLink').href = waLink;
+                }
+            } catch(e) {
+                console.log('Using default WhatsApp links');
+            }
+        }
+        loadWhatsAppLinks();
+    </script>
 </body>
 </html>
